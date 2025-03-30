@@ -65,7 +65,7 @@ test.group("Resolver", () => {
 
     assert.throws(() => {
       resolver.resolve("not-registered");
-    }, /Token não registrado/);
+    }, /Token not registered/);
   });
 
   test("throws if provider type is unknown", ({ assert }) => {
@@ -80,6 +80,6 @@ test.group("Resolver", () => {
 
     assert.throws(() => {
       resolver.resolve("X");
-    }, /Tipo de provider não suportado/);
+    }, /Unsupported provider type/);
   });
 });

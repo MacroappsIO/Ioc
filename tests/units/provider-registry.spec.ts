@@ -14,7 +14,7 @@ const mockProvider: ClassProvider<MyService> = {
 };
 
 test.group("ProviderRegistry", () => {
-  test("register() adiciona provider corretamente", ({ assert }) => {
+  test("should register a provider", ({ assert }) => {
     const registry = new ProviderRegistry();
     registry.register(mockProvider);
 
@@ -22,25 +22,25 @@ test.group("ProviderRegistry", () => {
     assert.deepEqual(stored, mockProvider);
   });
 
-  test("get() retorna undefined se não encontrado", ({ assert }) => {
+  test("should return undefined when provider is not found", ({ assert }) => {
     const registry = new ProviderRegistry();
     const result = registry.get(Symbol("NotRegistered"));
     assert.isUndefined(result);
   });
 
-  test("has() retorna true para provider existente", ({ assert }) => {
+  test("should return true when provider exists", ({ assert }) => {
     const registry = new ProviderRegistry();
     registry.register(mockProvider);
 
     assert.isTrue(registry.has(MyService));
   });
 
-  test("has() retorna false para token não registrado", ({ assert }) => {
+  test("should return false when provider does not exist", ({ assert }) => {
     const registry = new ProviderRegistry();
     assert.isFalse(registry.has(Symbol("Other")));
   });
 
-  test("all() retorna lista com todos os providers", ({ assert }) => {
+  test("should return all registered providers", ({ assert }) => {
     const registry = new ProviderRegistry();
     registry.register(mockProvider);
 
@@ -49,7 +49,7 @@ test.group("ProviderRegistry", () => {
     assert.deepEqual(all[0], mockProvider);
   });
 
-  test("clear() remove todos os providers", ({ assert }) => {
+  test("should clear all registered providers", ({ assert }) => {
     const registry = new ProviderRegistry();
     registry.register(mockProvider);
     registry.clear();

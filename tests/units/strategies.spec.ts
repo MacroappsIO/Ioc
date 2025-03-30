@@ -17,7 +17,7 @@ const mockContext: ResolverContext = {
     if (token === "Dependency") return new Dependency() as T;
     if (token === (Number as any)) return 42 as T;
 
-    throw new Error(`Token não resolvido: ${String(token)}`);
+    throw new Error(`Token not resolved: ${String(token)}`);
   },
 };
 

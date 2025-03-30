@@ -10,7 +10,7 @@ export class ModuleLoadException extends Error {
         ? error
         : JSON.stringify(error);
 
-    super(`[IoC] Falha ao importar módulo: ${file}\n→ ${message}`);
+    super(`[IoC] Failed to import module: ${file}\n→ ${message}`);
 
     this.name = "ModuleLoadException";
     this.file = file;

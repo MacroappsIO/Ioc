@@ -11,7 +11,7 @@ class ExampleService {
 }
 
 test.group("Scope", () => {
-  test("register() + resolve() value provider", ({ assert }) => {
+  test("should resolve a registered value provider", ({ assert }) => {
     const scope = new Scope();
 
     const valueProvider: ValueProvider = {
@@ -26,7 +26,7 @@ test.group("Scope", () => {
     assert.deepEqual(resolved, { env: "dev" });
   });
 
-  test("register() + resolve() factory provider", ({ assert }) => {
+  test("should resolve a registered factory provider", ({ assert }) => {
     const scope = new Scope();
 
     const factoryProvider: FactoryProvider = {
@@ -43,7 +43,7 @@ test.group("Scope", () => {
     assert.equal(result, "built-from-factory");
   });
 
-  test("register() + resolve() class provider", ({ assert }) => {
+  test("should resolve a registered class provider", ({ assert }) => {
     const scope = new Scope();
 
     const classProvider: ClassProvider = {
@@ -60,7 +60,7 @@ test.group("Scope", () => {
     assert.equal(result.name, "test");
   });
 
-  test("has() retorna true se token estiver registrado", ({ assert }) => {
+  test("should return true if token is registered", ({ assert }) => {
     const scope = new Scope();
 
     scope.register({
@@ -72,12 +72,12 @@ test.group("Scope", () => {
     assert.isTrue(scope.has("pi"));
   });
 
-  test("has() retorna false para token desconhecido", ({ assert }) => {
+  test("should return false if token is not registered", ({ assert }) => {
     const scope = new Scope();
-    assert.isFalse(scope.has("não-existe"));
+    assert.isFalse(scope.has("unknown"));
   });
 
-  test("clear() remove todos os providers", ({ assert }) => {
+  test("should clear all registered providers", ({ assert }) => {
     const scope = new Scope();
 
     scope.register({
@@ -91,11 +91,11 @@ test.group("Scope", () => {
     assert.isFalse(scope.has("x"));
   });
 
-  test("resolve() lança erro se token não for registrado", ({ assert }) => {
+  test("should throw if trying to resolve unregistered token", ({ assert }) => {
     const scope = new Scope();
 
     assert.throws(() => {
-      scope.resolve("inexistente");
-    }, /Token não registrado/);
+      scope.resolve("not-found");
+    }, /Token not registered/);
   });
 });
