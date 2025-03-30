@@ -1,56 +1,53 @@
 import { test } from "@japa/runner";
 import { Container } from "../../src/container/Container";
 import { ClassProvider, FactoryProvider, ValueProvider } from "../../src/types";
+import { FakeService } from "../fixtures/FakeService";
 
-class MyService {
-  getMessage() {
-    return "hello";
-  }
-}
-
-test.group("Container - bind()", () => {
-  test("bind().to() registra como singleton por padrão", ({ assert }) => {
+test.group("Container / bind()", () => {
+  test("should register class as singleton by default", ({ assert }) => {
     const container = new Container();
-    container.bind(MyService).to(MyService);
+    container.bind(FakeService).to(FakeService);
 
     const registered = (container as any).registry.get(
-      MyService
+      FakeService
     ) as ClassProvider;
 
     assert.equal(registered.type, "class");
     assert.equal(registered.scope, "singleton");
-    assert.strictEqual(registered.useClass, MyService);
+    assert.strictEqual(registered.useClass, FakeService);
   });
 
-  test("bind().to().asTransient() atualiza escopo para transient", ({
+  test("should set scope to transient when using asTransient()", ({
     assert,
   }) => {
     const container = new Container();
-    const config = container.bind(MyService).to(MyService);
+    const config = container.bind(FakeService).to(FakeService);
     config.asTransient();
 
     const registered = (container as any).registry.get(
-      MyService
+      FakeService
     ) as ClassProvider;
     assert.equal(registered.scope, "transient");
   });
 
-  test("bind().to().asSingleton() força escopo singleton", ({ assert }) => {
+  test("should keep scope as singleton when using asSingleton()", ({
+    assert,
+  }) => {
     const container = new Container();
-    const config = container.bind(MyService).to(MyService);
+    const config = container.bind(FakeService).to(FakeService);
     config.asSingleton();
 
     const registered = (container as any).registry.get(
-      MyService
+      FakeService
     ) as ClassProvider;
     assert.equal(registered.scope, "singleton");
   });
 });
 
-test.group("Container - bindFactory()", () => {
-  test("registra factory como singleton por padrão", ({ assert }) => {
+test.group("Container / bindFactory()", () => {
+  test("should register factory as singleton by default", ({ assert }) => {
     const container = new Container();
-    const factory = () => new MyService();
+    const factory = () => new FakeService();
 
     container.bindFactory("MyFactory", factory, []);
 
@@ -63,11 +60,11 @@ test.group("Container - bindFactory()", () => {
     assert.deepEqual(registered.deps, []);
   });
 
-  test("bindFactory().asTransient() atualiza escopo corretamente", ({
+  test("should set factory scope to transient using asTransient()", ({
     assert,
   }) => {
     const container = new Container();
-    const factory = () => new MyService();
+    const factory = () => new FakeService();
     const config = container.bindFactory("TransientFactory", factory);
     config.asTransient();
 
@@ -78,8 +75,8 @@ test.group("Container - bindFactory()", () => {
   });
 });
 
-test.group("Container - bindValue()", () => {
-  test("registra um value provider corretamente", ({ assert }) => {
+test.group("Container / bindValue()", () => {
+  test("should register value provider correctly", ({ assert }) => {
     const container = new Container();
     container.bindValue("MyValue", 123);
 
@@ -91,8 +88,8 @@ test.group("Container - bindValue()", () => {
   });
 });
 
-test.group("Container - createScope()", () => {
-  test("retorna nova instância de container (isolada)", ({ assert }) => {
+test.group("Container / createScope()", () => {
+  test("should create a new isolated scope", ({ assert }) => {
     const root = new Container();
     const scope = root.createScope();
 
