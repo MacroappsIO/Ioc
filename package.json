@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "tsx japaFile.ts",
-    "test:watch": "tsx japaFile.ts --watch"
+    "test": "tsx bin/tests.ts",
+    "test:watch": "tsx bin/tests.ts --watch"
   },
   "keywords": [],
   "author": "",
