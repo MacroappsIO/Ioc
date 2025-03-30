@@ -1,26 +1,29 @@
 import { test } from "@japa/runner";
 import "reflect-metadata";
+
 import { Inject } from "../../src/decorators/Inject";
 import { Injectable } from "../../src/decorators/Injectable";
 import { MetadataKeys } from "../../src/metadata";
 
-class ServiceA {}
-class ServiceB {}
-
 test.group("Inject decorator", () => {
-  test("define metadata para parâmetro injetado", ({ assert }) => {
-    class TestClass {
+  test("should define metadata for a single injected parameter", ({
+    assert,
+  }) => {
+    class DecoratedClass {
       constructor(@Inject("TokenA") _dep: any) {}
     }
 
-    const meta = Reflect.getMetadata(MetadataKeys.InjectParams, TestClass);
-    assert.deepEqual(meta, ["TokenA"]);
+    const metadata = Reflect.getMetadata(
+      MetadataKeys.InjectParams,
+      DecoratedClass
+    );
+    assert.deepEqual(metadata, ["TokenA"]);
   });
 
-  test("define múltiplos parâmetros injetados na ordem correta", ({
+  test("should define metadata in correct order for multiple injected parameters", ({
     assert,
   }) => {
-    class MultiInject {
+    class MultiDependencyClass {
       constructor(
         @Inject("A") _a: any,
         @Inject("B") _b: any,
@@ -28,41 +31,47 @@ test.group("Inject decorator", () => {
       ) {}
     }
 
-    const meta = Reflect.getMetadata(MetadataKeys.InjectParams, MultiInject);
-    assert.deepEqual(meta, ["A", "B", "C"]);
+    const metadata = Reflect.getMetadata(
+      MetadataKeys.InjectParams,
+      MultiDependencyClass
+    );
+    assert.deepEqual(metadata, ["A", "B", "C"]);
   });
 
-  test("mantém posições corretas mesmo se alguns não forem decorados", ({
+  test("should preserve parameter position for partial injection", ({
     assert,
   }) => {
-    class PartialInject {
+    class PartialInjectionClass {
       constructor(_a: any, @Inject("B") _b: any) {}
     }
 
-    const meta = Reflect.getMetadata(MetadataKeys.InjectParams, PartialInject);
-    assert.deepEqual(meta, [undefined, "B"]);
+    const metadata = Reflect.getMetadata(
+      MetadataKeys.InjectParams,
+      PartialInjectionClass
+    );
+    assert.deepEqual(metadata, [undefined, "B"]);
   });
 });
 
 test.group("Injectable decorator", () => {
-  test("marca a classe como injetável", ({ assert }) => {
+  test("should mark a class as injectable", ({ assert }) => {
     @Injectable()
-    class MyService {}
+    class InjectableClass {}
 
-    const isInjectable = Reflect.getMetadata(
+    const result = Reflect.getMetadata(
       MetadataKeys.Injectable,
-      MyService
+      InjectableClass
     );
-    assert.isTrue(isInjectable);
+    assert.isTrue(result);
   });
 
-  test("não aplica metadata se não for decorado", ({ assert }) => {
-    class PlainClass {}
+  test("should not mark class as injectable if not decorated", ({ assert }) => {
+    class UndecoratedClass {}
 
-    const isInjectable = Reflect.getMetadata(
+    const result = Reflect.getMetadata(
       MetadataKeys.Injectable,
-      PlainClass
+      UndecoratedClass
     );
-    assert.isUndefined(isInjectable);
+    assert.isUndefined(result);
   });
 });
