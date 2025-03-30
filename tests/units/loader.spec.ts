@@ -3,15 +3,17 @@ import { loadModules } from "../../src/modules/Loader";
 import { MetadataKeys } from "../../src/metadata";
 import { ModuleLoadException } from "../../src/exceptions/ModuleLoadException";
 
-test.group("loadModules (mocked)", () => {
-  test("carrega apenas módulos com @Injectable", async ({ assert }) => {
-    const files = [
+test.group("loadModules() with mocks", () => {
+  test("should load only modules decorated with @Injectable", async ({
+    assert,
+  }) => {
+    const mockFiles = [
       "/fake/path/moduleA.js",
       "/fake/path/moduleB.js",
       "/fake/path/broken.js",
     ];
 
-    const globFn = async () => files;
+    const globFn = async () => mockFiles;
 
     const dynamicImport = async (file: string) => {
       if (file.includes("moduleA")) {
@@ -21,11 +23,11 @@ test.group("loadModules (mocked)", () => {
       }
 
       if (file.includes("moduleB")) {
-        return { util: {} }; // não injetável
+        return { util: {} }; // not decorated
       }
 
       if (file.includes("broken")) {
-        throw new Error("Erro no import");
+        throw new Error("Import failure");
       }
 
       return {};
@@ -43,21 +45,23 @@ test.group("loadModules (mocked)", () => {
     assert.instanceOf(report.failed[0].error, ModuleLoadException);
   });
 
-  test("falha se nenhum arquivo encontrado e failOnEmpty = true", async ({
+  test("should throw if no files found and failOnEmpty = true", async ({
     assert,
   }) => {
     const globFn = async () => [];
 
     await assert.rejects(
       () => loadModules("/none/**/*.ts", { failOnEmpty: true }, { globFn }),
-      /Nenhum módulo encontrado/
+      /No module found/
     );
   });
 
-  test("interrompe ao primeiro erro se failFast = true", async ({ assert }) => {
+  test("should abort immediately if failFast = true and import fails", async ({
+    assert,
+  }) => {
     const globFn = async () => ["/fake/path/module.js"];
     const dynamicImport = async () => {
-      throw new Error("Falha");
+      throw new Error("Failure");
     };
 
     try {
@@ -66,10 +70,10 @@ test.group("loadModules (mocked)", () => {
         { failFast: true },
         { globFn, dynamicImport }
       );
-      assert.fail("Esperava exceção mas não foi lançada");
+      assert.fail("Expected exception was not thrown");
     } catch (error) {
       assert.instanceOf(error, ModuleLoadException);
-      assert.match(error.message, /Falha ao importar módulo/);
+      assert.match(error.message, /Failed to import module/);
     }
   });
 });

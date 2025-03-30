@@ -28,7 +28,7 @@ export async function loadModules(
   const files = await globFn(patterns, { absolute: true });
 
   if (options.failOnEmpty && files.length === 0) {
-    throw new Error("[IoC] Nenhum módulo encontrado com o padrão informado.");
+    throw new Error("[IoC] No module found for the given pattern.");
   }
 
   for (const file of files) {
@@ -46,13 +46,16 @@ export async function loadModules(
 
       if (!hasInjectable) {
         report.skipped.push(file);
-        if (options.verbose)
-          console.warn(`[IoC] ${file} não contém nenhum @Injectable.`);
+        if (options.verbose) {
+          console.warn(`[IoC] ${file} does not contain any @Injectable class.`);
+        }
         continue;
       }
 
       report.loaded.push(file);
-      if (options.verbose) console.info(`[IoC] Carregado: ${file}`);
+      if (options.verbose) {
+        console.info(`[IoC] Loaded: ${file}`);
+      }
     } catch (error: unknown) {
       const wrapped = new ModuleLoadException(file, error);
       report.failed.push({ file, error: wrapped });
@@ -61,7 +64,9 @@ export async function loadModules(
         console.error(wrapped.innerError.stack);
       }
 
-      if (options.failFast) throw wrapped;
+      if (options.failFast) {
+        throw wrapped;
+      }
     }
   }
 
