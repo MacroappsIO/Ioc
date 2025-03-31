@@ -119,7 +119,7 @@ test.group("ValueResolver", () => {
   });
 });
 
-test.group("strategyTable", () => {
+test.group("StrategyTable", () => {
   test("resolves strategy by type", ({ assert }) => {
     assert.strictEqual(strategyTable.get("class"), ClassResolver);
     assert.strictEqual(strategyTable.get("factory"), FactoryResolver);
