@@ -180,4 +180,4 @@ MIT
 
 ## 👨‍💻 Maintainer
 
-Developed by [R. Souza](mailto:rsouza@example.com) for the **MacroApps** platform.
+Developed by [R. Souza](mailto:robson.trasel@gmail.com) for the **MacroApps** platform.
